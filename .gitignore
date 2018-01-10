@@ -57,4 +57,9 @@ typings/
 # dotenv environment variables file
 .env
 
-reports/
+temp/
+dist/
+
+test/e2e/reports/
+yarn.lock
+package-lock.json
