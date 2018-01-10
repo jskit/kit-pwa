@@ -1,6 +1,6 @@
 {
   "name": "kit-pwa",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "pwa app",
   "main": "index.js",
   "scripts": {
