@@ -1,3 +1,15 @@
+# kit-pwa
+
+```bash
+git clone https://github.com/jskit/kit-pwa.git
+
+cd ~/.vue-templates
+# sudo ln -s 源文件 目标文件
+ln -s ~/github/jskit/kit-pwa ./kit-pwa
+
+vue init kit-pwa my-project
+```
+
 # vue-pwa-boilerplate
 
 > A full-featured [PWA](https://developers.google.com/web/progressive-web-apps/) template with webpack, hot-reload, lint-on-save, unit testing & css extraction.
@@ -15,6 +27,7 @@ This is a project template for [vue-cli](https://github.com/vuejs/vue-cli). **It
 ```bash
 $ npm install -g vue-cli
 $ vue init pwa my-project
+$ vue init ~/github/jskit/kit-pwa my-project
 $ cd my-project
 $ npm install
 $ npm run dev

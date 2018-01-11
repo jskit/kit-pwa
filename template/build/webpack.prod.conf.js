@@ -15,7 +15,8 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const loadMinified = require('./load-minified')
 
-const env = {{#if_or unit e2e}}process.env.NODE_ENV === 'testing'
+const isTesting = config.env['__TEST__']
+const env = {{#if_or unit e2e}}isTesting
   ? require('../config/test.env')
   : {{/if_or}}config.build.env
 
@@ -33,10 +34,8 @@ const webpackConfig = merge(baseWebpackConfig, {
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
   },
   plugins: [
-    // http://vuejs.github.io/vue-loader/en/workflow/production.html
-    new webpack.DefinePlugin({
-      'process.env': env
-    }),
+    // UglifyJsPlugin 处理 node_modules 里es6内容会报错
+    // 注入变量 base 中统一处理 webpack.DefinePlugin
     new UglifyJsPlugin({
       uglifyOptions: {
         compress: {
@@ -60,11 +59,12 @@ const webpackConfig = merge(baseWebpackConfig, {
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
+    // 如果同时引入了html-loader和html-webpack-plugin，两个插件都设置了minify属性，则会编译生成时报错
     new HtmlWebpackPlugin({
-      filename: {{#if_or unit e2e}}process.env.NODE_ENV === 'testing'
+      filename: {{#if_or unit e2e}}isTesting
         ? 'index.html'
         : {{/if_or}}config.build.index,
-      template: 'index.html',
+      template: config.template,
       inject: true,
       minify: {
         removeComments: true,
@@ -104,7 +104,14 @@ const webpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
-      }
+      },
+      // webpack中JS手动引入的图片问题(按照约定，assets内全为需要编译的图片，不需要的放在 static 下)
+      // webpack是万物皆模块，但也就是说，不通过require引入的就不会算成模块了(插件中的另算，那是处理过的)。所以，在JS中手动引入图片时会遇到问题就是对应的图片并不会被打包，导致之后找不到路径。
+      //{
+      //  from: 'src/assets',
+      //  to: config.build.assetsSubDirectory,
+      //  ignore: ['.*']
+      //}
     ]),
     // service worker caching
     new SWPrecacheWebpackPlugin({

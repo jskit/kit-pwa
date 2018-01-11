@@ -3,6 +3,7 @@
 require('./check-versions')()
 
 const config = require('../config')
+
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
 }
@@ -12,7 +13,9 @@ const path = require('path')
 const express = require('express')
 const webpack = require('webpack')
 const proxyMiddleware = require('http-proxy-middleware')
-const webpackConfig = {{#if_or unit e2e}}process.env.NODE_ENV === 'testing'
+
+const isTesting = config.env['__TEST__']
+const webpackConfig = {{#if_or unit e2e}}isTesting
   ? require('./webpack.prod.conf')
   : {{/if_or}}require('./webpack.dev.conf')
 
@@ -64,6 +67,7 @@ app.use(devMiddleware)
 
 // serve pure static assets
 const staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
+// 建立静态文件服务
 app.use(staticPath, express.static('./static'))
 
 const uri = 'http://localhost:' + port
@@ -77,7 +81,7 @@ console.log('> Starting dev server...')
 devMiddleware.waitUntilValid(() => {
   console.log('> Listening at ' + uri + '\n')
   // when env is testing, don't need open it
-  if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
+  if (autoOpenBrowser && !isTesting) {
     opn(uri)
   }
   _resolve()
