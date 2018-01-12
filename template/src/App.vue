@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="root">
     <header>
       <span>Vue.js PWA</span>
     </header>

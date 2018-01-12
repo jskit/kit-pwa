@@ -1,13 +1,7 @@
 # kit-pwa
 
 ```bash
-git clone https://github.com/jskit/kit-pwa.git
-
-cd ~/.vue-templates
-# sudo ln -s 源文件 目标文件
-ln -s ~/github/jskit/kit-pwa ./kit-pwa
-
-vue init kit-pwa my-project
+vue init 'jskit/kit-pwa#dev' my-project
 ```
 
 # vue-pwa-boilerplate
